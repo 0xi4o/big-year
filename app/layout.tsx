@@ -28,13 +28,8 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
-                  const stored = localStorage.getItem('theme');
-                  if (stored === 'dark' || stored === 'light') {
-                    document.documentElement.classList.toggle('dark', stored === 'dark');
-                  } else {
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    document.documentElement.classList.toggle('dark', prefersDark);
-                  }
+                  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  document.documentElement.classList.toggle('dark', prefersDark);
                 } catch (e) {}
               })();
             `,

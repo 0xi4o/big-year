@@ -26,7 +26,6 @@ import {
   Calendar as CalendarIcon,
   Trash2,
 } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { formatDateKey, cn } from "@/lib/utils";
 import { CalendarListItem } from "@/types/calendar";
 
@@ -727,7 +726,7 @@ export default function HomePage() {
   if (status !== "authenticated") {
     return (
       <div className="min-h-screen flex flex-col bg-background">
-        <header className="border-b border-[hsl(0,0%,85%)] dark:border-[hsl(0,0%,20%)]">
+        <header className="fixed top-0 left-0 right-0 z-50 border-b border-[hsl(0,0%,85%)] dark:border-[hsl(0,0%,20%)] bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center">
@@ -736,6 +735,7 @@ export default function HomePage() {
               <div className="flex items-center gap-3">
                 <Button
                   onClick={() => signIn("google")}
+                  variant="outline"
                   size="lg"
                   className="rounded-full px-6"
                 >
@@ -746,7 +746,7 @@ export default function HomePage() {
           </div>
         </header>
 
-        <main className="flex-1">
+        <main className="flex-1 pt-16">
           <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
             <div className="text-center">
               <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6">
@@ -788,9 +788,9 @@ export default function HomePage() {
               className="mt-16 sm:mt-24 grid grid-cols-1 md:grid-cols-3 gap-8"
               id="features"
             >
-              <div className="text-center p-6 rounded-lg border border-[hsl(0,0%,85%)] dark:border-[hsl(0,0%,20%)]">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4">
-                  <CalendarIcon className="h-6 w-6 text-primary" />
+              <div className="text-center p-6 rounded-2xl border border-[hsl(0,0%,85%)] dark:border-[hsl(0,0%,20%)]">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/[0.03] mb-4">
+                  <CalendarIcon className="h-6 w-6 text-primary opacity-60" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">All-Day Events</h3>
                 <p className="text-muted-foreground">
@@ -799,9 +799,9 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <div className="text-center p-6 rounded-lg border border-[hsl(0,0%,85%)] dark:border-[hsl(0,0%,20%)]">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4">
-                  <Clock className="h-6 w-6 text-primary" />
+              <div className="text-center p-6 rounded-2xl border border-[hsl(0,0%,85%)] dark:border-[hsl(0,0%,20%)]">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/[0.03] mb-4">
+                  <Clock className="h-6 w-6 text-primary opacity-60" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Easy Planning</h3>
                 <p className="text-muted-foreground">
@@ -810,9 +810,9 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <div className="text-center p-6 rounded-lg border border-[hsl(0,0%,85%)] dark:border-[hsl(0,0%,20%)]">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4">
-                  <Settings className="h-6 w-6 text-primary" />
+              <div className="text-center p-6 rounded-2xl border border-[hsl(0,0%,85%)] dark:border-[hsl(0,0%,20%)]">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/[0.03] mb-4">
+                  <Settings className="h-6 w-6 text-primary opacity-60" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Customizable</h3>
                 <p className="text-muted-foreground">
@@ -906,7 +906,6 @@ export default function HomePage() {
           </Button>
         </div>
         <div className="flex items-center justify-end gap-2">
-          <ThemeToggle />
           <Button
             variant="outline"
             size="icon"
