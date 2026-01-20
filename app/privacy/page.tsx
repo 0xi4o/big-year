@@ -162,9 +162,10 @@ export default function PrivacyPage() {
               remove your OAuth tokens from our database.
             </li>
             <li className="mb-2">
-              <strong>Deletion:</strong> You can request deletion of your account and all associated data by contacting 
-              us at gabe@valdivia.works. Upon request, we will delete your account, OAuth tokens, user preferences, 
-              and all other stored data within 30 days.
+              <strong>Deletion:</strong> You can delete your account and all associated data at any time by clicking the 
+              settings icon in the sidebar, then selecting "Delete account" from the menu. 
+              This will immediately delete your account, OAuth tokens, user preferences, and all other stored data. 
+              Alternatively, you can contact us at gabe@valdivia.works to request account deletion.
             </li>
             <li className="mb-2">
               <strong>Export:</strong> You can export your calendar data directly from Google Calendar at any time, 

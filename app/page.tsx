@@ -80,6 +80,9 @@ export default function HomePage() {
   const createDragStartOffset = useRef<number>(0);
   const [showHeaderBorder, setShowHeaderBorder] = useState<boolean>(false);
   const scrollableContainerRef = useRef<HTMLDivElement | null>(null);
+  const [deleteAccountOpen, setDeleteAccountOpen] = useState<boolean>(false);
+  const [deleteAccountConfirm, setDeleteAccountConfirm] = useState<string>("");
+  const [deleteAccountSubmitting, setDeleteAccountSubmitting] = useState<boolean>(false);
 
   const mergeCalendarColorsWithDefaults = (
     calendars: CalendarListItem[],
@@ -1329,6 +1332,40 @@ export default function HomePage() {
                               <span>Show hidden events</span>
                             </label>
                           )}
+                          <div className="border-t border-[hsl(0,0%,85%)] dark:border-[hsl(0,0%,20%)] my-2" />
+                          <Link
+                            href="/privacy"
+                            className="text-sm hover:bg-accent p-2 rounded w-full text-left block"
+                            onClick={() => setSettingsDropdownOpen(false)}
+                          >
+                            Privacy Policy
+                          </Link>
+                          <Link
+                            href="/terms"
+                            className="text-sm hover:bg-accent p-2 rounded w-full text-left block"
+                            onClick={() => setSettingsDropdownOpen(false)}
+                          >
+                            Terms of Service
+                          </Link>
+                          <button
+                            className="text-sm hover:bg-accent p-2 rounded w-full text-left"
+                            onClick={() => {
+                              setSettingsDropdownOpen(false);
+                              signOut();
+                            }}
+                          >
+                            Sign out
+                          </button>
+                          <div className="border-t border-[hsl(0,0%,85%)] dark:border-[hsl(0,0%,20%)] my-2" />
+                          <button
+                            className="text-sm text-destructive hover:bg-accent p-2 rounded w-full text-left"
+                            onClick={() => {
+                              setSettingsDropdownOpen(false);
+                              setDeleteAccountOpen(true);
+                            }}
+                          >
+                            Delete account
+                          </button>
                         </div>
                       </>
                     )}
@@ -1442,50 +1479,91 @@ export default function HomePage() {
                 </div>
               )}
             </div>
-            <div className="p-3 border-t border-[hsl(0,0%,85%)] dark:border-[hsl(0,0%,20%)]">
-              {status === "authenticated" ? (
-                <>
-                  <Button
-                    className="w-full justify-center gap-2 rounded-full bg-transparent hover:bg-[rgba(255,255,255,0.1)] dark:hover:bg-[rgba(255,255,255,0.1)]"
-                    variant="outline"
-                    onClick={() => {
-                      setSidebarOpen(false);
-                      signOut();
-                    }}
-                  >
-                    Sign out
-                  </Button>
-                  <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground mt-3">
-                    <Link
-                      href="/privacy"
-                      className="hover:text-foreground transition-colors"
-                      onClick={() => setSidebarOpen(false)}
-                    >
-                      Privacy Policy
-                    </Link>
-                    <span>•</span>
-                    <Link
-                      href="/terms"
-                      className="hover:text-foreground transition-colors"
-                      onClick={() => setSidebarOpen(false)}
-                    >
-                      Terms of Service
-                    </Link>
-                  </div>
-                </>
-              ) : (
-                <Button
-                  className="w-full justify-center"
-                  onClick={() => {
-                    setSidebarOpen(false);
-                    signIn("google");
-                  }}
-                >
-                  Sign in with Google
-                </Button>
-              )}
-            </div>
           </aside>
+        </>
+      )}
+      {deleteAccountOpen && (
+        <>
+          <div
+            className="fixed inset-0 bg-background/60 z-40"
+            onClick={() => {
+              if (!deleteAccountSubmitting) {
+                setDeleteAccountOpen(false);
+                setDeleteAccountConfirm("");
+              }
+            }}
+            aria-hidden
+          />
+          <div
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-[hsl(0,0%,99%)] dark:bg-[hsl(0,0%,10%)] border border-[hsl(0,0%,85%)] dark:border-[hsl(0,0%,20%)] rounded-md shadow-lg z-50 p-6"
+            role="dialog"
+            aria-label="Delete account"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-xl font-semibold mb-4">Delete Account</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              This action cannot be undone. This will permanently delete your
+              account and all associated data, including:
+            </p>
+            <ul className="text-sm text-muted-foreground list-disc list-inside mb-4 space-y-1">
+              <li>Your user profile information</li>
+              <li>All linked Google accounts and OAuth tokens</li>
+              <li>Your calendar preferences and settings</li>
+            </ul>
+            <p className="text-sm text-muted-foreground mb-4">
+              Your calendar events in Google Calendar will not be affected.
+            </p>
+            <p className="text-sm font-medium mb-2">
+              Type <span className="font-mono bg-muted px-1 rounded">DELETE</span> to confirm:
+            </p>
+            <input
+              type="text"
+              className="w-full border border-[hsl(0,0%,85%)] dark:border-[hsl(0,0%,20%)] rounded px-3 py-2 bg-background mb-4 focus:outline-none focus:ring-2 focus:ring-foreground"
+              value={deleteAccountConfirm}
+              onChange={(e) => setDeleteAccountConfirm(e.target.value)}
+              placeholder="DELETE"
+              disabled={deleteAccountSubmitting}
+              autoFocus
+            />
+            <div className="flex gap-2 justify-end">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDeleteAccountOpen(false);
+                  setDeleteAccountConfirm("");
+                }}
+                disabled={deleteAccountSubmitting}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={async () => {
+                  if (deleteAccountConfirm !== "DELETE") return;
+                  try {
+                    setDeleteAccountSubmitting(true);
+                    const res = await fetch("/api/account/delete", {
+                      method: "POST",
+                    });
+                    if (!res.ok) {
+                      throw new Error("Failed to delete account");
+                    }
+                    // Sign out and redirect to home
+                    await signOut({ callbackUrl: "/" });
+                  } catch (e) {
+                    console.error("Error deleting account:", e);
+                    alert("Failed to delete account. Please try again.");
+                    setDeleteAccountSubmitting(false);
+                  }
+                }}
+                disabled={
+                  deleteAccountSubmitting || deleteAccountConfirm !== "DELETE"
+                }
+              >
+                {deleteAccountSubmitting ? "Deleting…" : "Delete Account"}
+              </Button>
+            </div>
+          </div>
         </>
       )}
       <div ref={scrollableContainerRef} className="flex-1 min-h-0">
