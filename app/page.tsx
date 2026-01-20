@@ -770,7 +770,15 @@ export default function HomePage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center">
-                <h1 className="text-xl font-bold">Big Year</h1>
+                <Image
+                  src={theme === "dark" ? "/logo-dark.svg" : "/logo-light.png"}
+                  alt="Year"
+                  width={166}
+                  height={45}
+                  className="h-8 w-auto"
+                  priority
+                  key={theme}
+                />
               </div>
               <div className="flex items-center gap-3">
                 <Button
