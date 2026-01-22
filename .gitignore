@@ -7,5 +7,5 @@ node_modules
 *.db-journal
 prisma/dev.db
 
-
-
+generated/
+prisma/generated/
